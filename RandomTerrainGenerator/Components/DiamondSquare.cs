@@ -65,6 +65,10 @@ namespace RandomTerrainGenerator.Components
                     }
                 }
             else
+            {
+                Plugin.Log("PlaneMeshTerrain is missing. Add Plane Mesh to SceneReferences to continue.");
+                return;
+            }
 
 
             if (terrain)
@@ -103,9 +107,9 @@ namespace RandomTerrainGenerator.Components
                 PositionRandomizer.PlaceAiNodes(mapRadiusForNavMeshCheck);
 
                 var mainAiNode = SceneReferences.Instance.OutsideAiNodes[0];
-                if (Mathf.Abs(mainAiNode.position.x) > 40f || Mathf.Abs(mainAiNode.position.z) > 40f)
+                if ((Mathf.Abs(mainAiNode.position.x) > 40f || Mathf.Abs(mainAiNode.position.z) > 40f))
                 {
-                    Plugin.Log($"seed {seed}: Main ai node is not in the center or the center is in the water");
+                    Plugin.Log($"Seed {seed}: Main ai node is not in the center or the center is in the water");
                     return false;
                 }
                 else
@@ -121,11 +125,12 @@ namespace RandomTerrainGenerator.Components
                             SceneReferences.Instance.nodesToDestroy.Add(aiNode);
                     }
 
-                    Plugin.Log($"seed {seed}: NavMeshErrors: {SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count}, navMeshErrorsCounter: {SceneReferences.Instance.nodesToDestroy.Count}");
+                    Plugin.Log($"Seed {seed}: NavMeshErrors: {SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count}, navMeshErrorsCounter: {SceneReferences.Instance.nodesToDestroy.Count}");
                     if (SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count >= 0.5) return false;
                 }
             }
 
+            Plugin.Log($"Seed {seed} is valid.");
             return true;
         }
     
@@ -201,7 +206,20 @@ namespace RandomTerrainGenerator.Components
                 range -= range * 0.5f * _roughness;
             }
 
-            return;
+            Plugin.Log("Diamond Square algorithm done.");
+        }
+
+        public void CleanupAiNodes()
+        {
+            if (Plugin.Instance && StartOfRound.Instance)
+            {
+                Plugin.Log("Removing 'bad' ai nodes.");
+
+                foreach(var aiNode in SceneReferences.Instance.nodesToDestroy)
+                    Destroy(aiNode.gameObject);
+
+                SceneReferences.Instance.nodesToDestroy.Clear();
+            }
         }
     }
 }
