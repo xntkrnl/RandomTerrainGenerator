@@ -23,5 +23,8 @@ namespace RandomTerrainGenerator.Components
         public List<Transform> OutsideAiNodes;
         internal List<Transform> nodesToDestroy;
         public Mesh planeMeshTerrain;
+        public GameObject mainEntrancePrefabs;
+        public GameObject fireExitPrefabs;
+        
     }
 }
