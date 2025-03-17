@@ -2,7 +2,7 @@
 using Unity.AI.Navigation;
 using UnityEngine;
 
-namespace RandomTerrainGenerator.Components
+namespace RandomTerrainGenerator.Components.Moon
 {
     [RequireComponent(typeof(NavMeshSurface))]
     public class SceneReferences : MonoBehaviour
@@ -14,7 +14,7 @@ namespace RandomTerrainGenerator.Components
             {
                 if (_instance == null)
                     _instance = FindFirstObjectByType<SceneReferences>();
-                return (_instance);
+                return _instance;
             }
         }
 
@@ -25,6 +25,6 @@ namespace RandomTerrainGenerator.Components
         public Mesh planeMeshTerrain;
         public GameObject mainEntrancePrefabs;
         public GameObject fireExitPrefabs;
-        
+
     }
 }

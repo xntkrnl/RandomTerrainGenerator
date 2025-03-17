@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Utilities;
 
-namespace RandomTerrainGenerator.Components
+namespace RandomTerrainGenerator.Components.Moon
 {
     [RequireComponent(typeof(SceneReferences))]
     public class DiamondSquareScript : MonoBehaviour
@@ -107,7 +107,7 @@ namespace RandomTerrainGenerator.Components
                 PositionRandomizer.PlaceAiNodes(mapRadiusForNavMeshCheck);
 
                 var mainAiNode = SceneReferences.Instance.OutsideAiNodes[0];
-                if ((Mathf.Abs(mainAiNode.position.x) > 40f || Mathf.Abs(mainAiNode.position.z) > 40f))
+                if (Mathf.Abs(mainAiNode.position.x) > 40f || Mathf.Abs(mainAiNode.position.z) > 40f)
                 {
                     Plugin.Log($"Seed {seed}: Main ai node is not in the center or the center is in the water");
                     return false;
@@ -133,7 +133,7 @@ namespace RandomTerrainGenerator.Components
             Plugin.Log($"Seed {seed} is valid.");
             return true;
         }
-    
+
         private void Reset()
         {
             heights = new float[heightMapResolution, heightMapResolution];
@@ -172,7 +172,7 @@ namespace RandomTerrainGenerator.Components
                         average += heights[x + sideLength, y + sideLength];
                         average /= 4.0f;
 
-                        average += (Random.value * (range * 2.0f)) - range;
+                        average += Random.value * (range * 2.0f) - range;
                         heights[x + halfSide, y + halfSide] = average;
                     }
                 }
@@ -188,7 +188,7 @@ namespace RandomTerrainGenerator.Components
                         average += heights[x, (y - halfSide + heightMapResolution - 1) % (heightMapResolution - 1)];
                         average /= 4.0f;
 
-                        average += (Random.value * (range * 2.0f)) - range;
+                        average += Random.value * (range * 2.0f) - range;
                         heights[x, y] = average;
 
                         if (x == 0)
@@ -215,7 +215,7 @@ namespace RandomTerrainGenerator.Components
             {
                 Plugin.Log("Removing 'bad' ai nodes.");
 
-                foreach(var aiNode in SceneReferences.Instance.nodesToDestroy)
+                foreach (var aiNode in SceneReferences.Instance.nodesToDestroy)
                     Destroy(aiNode.gameObject);
 
                 SceneReferences.Instance.nodesToDestroy.Clear();

@@ -18,10 +18,10 @@ namespace RandomTerrainGenerator.Utils
             Plugin.Log($"HeightMap saved in: {pathAndFileName}");
         }
 
-        internal static Texture2D ToTexture2D(RenderTexture renderTexture, int resolution)
+        internal static Texture2D ToTexture2D(RenderTexture renderTexture)
         {
             RenderTexture currentActiveRT = RenderTexture.active;
-            Texture2D texture2D = new Texture2D(resolution, resolution, TextureFormat.RGB24, false);
+            Texture2D texture2D = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
 
             RenderTexture.active = renderTexture;
             texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
@@ -31,7 +31,7 @@ namespace RandomTerrainGenerator.Utils
             return texture2D;
         }
 
-        internal static RenderTexture toRenderTexture(Texture2D texture2D)
+        internal static RenderTexture ToRenderTexture(Texture2D texture2D)
         {
             RenderTexture renderTexture = new RenderTexture();
             RenderTexture currentActiveRT = RenderTexture.active; //not sure if i actually need this

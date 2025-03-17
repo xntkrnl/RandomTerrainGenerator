@@ -1,4 +1,4 @@
-﻿using RandomTerrainGenerator.Components;
+﻿using RandomTerrainGenerator.Components.Moon;
 using System;
 using System.Text;
 using UnityEngine;
