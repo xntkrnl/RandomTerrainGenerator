@@ -44,7 +44,7 @@ namespace RandomTerrainGenerator.Utils
 
         internal static void SaveTexture(RenderTexture renderTexture, string nameOfPNG, int resolution)
         {
-            var texture = ToTexture2D(renderTexture, resolution);
+            var texture = ToTexture2D(renderTexture);
             SaveTexturePNG(texture, nameOfPNG);
         }
     }
