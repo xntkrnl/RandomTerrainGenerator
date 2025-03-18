@@ -107,7 +107,7 @@ namespace RandomTerrainGenerator.Components.Moon
                 PositionRandomizer.PlaceAiNodes(mapRadiusForNavMeshCheck);
 
                 var mainAiNode = SceneReferences.Instance.OutsideAiNodes[0];
-                if (Mathf.Abs(mainAiNode.position.x) > 40f || Mathf.Abs(mainAiNode.position.z) > 40f)
+                if (Mathf.Abs(mainAiNode.position.x) > 40f || Mathf.Abs(mainAiNode.position.z) > 40f || SceneReferences.Instance.nodesToDestroy.Contains(mainAiNode))
                 {
                     Plugin.Log($"Seed {seed}: Main ai node is not in the center or the center is in the water");
                     return false;

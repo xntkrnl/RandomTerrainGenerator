@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 namespace RandomTerrainGenerator.Utils
 {
@@ -35,6 +36,9 @@ namespace RandomTerrainGenerator.Utils
 
             //first node
             NavMesh.SamplePosition(Vector3.zero, out var hit, mapRadius, 1 << NavMesh.GetAreaFromName("Walkable"));
+            if (hit.position == Vector3.positiveInfinity)
+                SceneReferences.Instance.nodesToDestroy.Add(aiNodes[0]);
+
             aiNodes[0].position = hit.position;
         }
 
