@@ -23,36 +23,20 @@ namespace RandomTerrainGenerator.Components.Item
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
-            base.ItemActivate(used, buttonDown);
-
             if (base.IsOwner)
-            {
                 playerHeldBy.DiscardHeldObject();
-            }
         }
 
         public override void DiscardItem()
         {
             base.DiscardItem();
+
+            ChangeStateToActivated();
         }
 
-        public override void EquipItem()
+        public override void GrabItem()
         {
-            base.EquipItem();
-
-            ChangeStateToDeactivated();
-        }
-
-        public override void DiscardItemFromEnemy()
-        {
-            base.DiscardItemFromEnemy();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-            if (playerHeldBy == null && !isHeld && !isHeldByEnemy && reachedFloorTarget && !activated && !insertedBattery.empty)
-                ChangeStateToActivated();
+            ChangeStateToDeactivated(); 
         }
 
         private void ChangeStateToActivated()
