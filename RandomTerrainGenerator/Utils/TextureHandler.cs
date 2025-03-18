@@ -34,11 +34,9 @@ namespace RandomTerrainGenerator.Utils
         internal static RenderTexture ToRenderTexture(Texture2D texture2D)
         {
             RenderTexture renderTexture = new RenderTexture();
-            RenderTexture currentActiveRT = RenderTexture.active; //not sure if i actually need this
 
             Graphics.Blit(texture2D, renderTexture);
 
-            RenderTexture.active = currentActiveRT;
             return renderTexture;
         }
 
