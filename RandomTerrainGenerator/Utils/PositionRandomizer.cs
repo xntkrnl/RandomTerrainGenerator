@@ -17,13 +17,13 @@ namespace RandomTerrainGenerator.Utils
             {
                 int attempts = 0;
                 var position = Vector3.zero;
-                //check if ai nodes too close
+
                 do
                 {
                     position = PlaceAtRandomPosition(mapRadius);
                     attempts++;
                 }
-                while ((!Physics.CheckSphere(position, 15f, 4194304, QueryTriggerInteraction.Collide) && attempts < 4));
+                while (!Physics.CheckSphere(position, 15f, 4194304, QueryTriggerInteraction.Collide) && attempts < 4);
 
                 if (position == Vector3.positiveInfinity /*|| Mathf.Abs(position.x) > 450 || Mathf.Abs(position.z) > 450*/)
                 {
@@ -50,10 +50,5 @@ namespace RandomTerrainGenerator.Utils
 
             return hit.position;
         }
-
-        //Plans for fireexit/main/something else prefabs positions:
-        //PlaceAtRandomPosition(400f)
-        //check if can actually path to it
-        //mark ai nodes in some radius to destroy if needed
     }
 }
