@@ -24,5 +24,7 @@ namespace RandomTerrainGenerator.Patches
         //split terrain mesh into 4 parts
 
         //я устал писать на английском
+
+        //create main class (maybe abstract) for generators if i will make more than one
     }
 }
