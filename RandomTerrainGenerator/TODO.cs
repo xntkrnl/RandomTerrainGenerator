@@ -12,7 +12,7 @@ namespace RandomTerrainGenerator.Patches
         //make main/fireexit prefabs
 
         //landscape scaner
-        //base is ready, need to make prefab, sounds, set up animator, rpcs (if needed), vfx, shader for lamps... 
+        //base is ready, need to make prefab, sounds, rpcs (if needed), vfx, shader for lamps... 
 
         //Plans for fireexit/main/something else prefabs positions:
         //PlaceAtRandomPosition(400f)
@@ -20,8 +20,6 @@ namespace RandomTerrainGenerator.Patches
         //mark ai nodes in some radius to destroy if needed
 
         //check if i can actually use perlin noise or any other kind of random noise
-
-        //split terrain mesh into 4 parts
 
         //я устал писать на английском
 

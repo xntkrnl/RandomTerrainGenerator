@@ -19,6 +19,7 @@ namespace RandomTerrainGenerator.Components.Moon
         public float[,] heights;
         public float _roughness = 0.8f;
         public int heightMultiplier = 300;
+        public bool randomHeightMultiplier;
 
         [Space(5f)]
         [Header("Random")]
@@ -50,23 +51,25 @@ namespace RandomTerrainGenerator.Components.Moon
                 seed = StartOfRound.Instance.randomMapSeed;
 
             bool terrainValidated = false;
-            if (SceneReferences.Instance.planeMeshTerrain)
+            if (SceneReferences.Instance.sandMeshTerrain && SceneReferences.Instance.grassMeshTerrain && SceneReferences.Instance.stoneMeshTerrain && SceneReferences.Instance.snowMeshTerrain && SceneReferences.Instance.textureMeshTerrain)
                 while (!terrainValidated)
                 {
                     Random.InitState(seed);
                     Reset();
                     ExecuteDiamondSquare();
 
+                    if (randomHeightMultiplier)
+                        heightMultiplier = Random.RandomRangeInt(300, 600);
+                    TerrainToPlaneMesh.HeightmapTo5Meshes(heights, heightMultiplier);
+
                     if (ValidateTerrain(seed))
                         terrainValidated = true;
                     else
-                    {
                         seed++;
-                    }
                 }
             else
             {
-                Plugin.Log("PlaneMeshTerrain is missing. Add Plane Mesh to SceneReferences to continue.");
+                Plugin.Log("SandMeshTerrain/GrassMeshTerrain/StoneMeshTerrain/SnowMeshTerrain is missing. Add meshes to SceneReferences to continue.");
                 return;
             }
 
@@ -90,7 +93,7 @@ namespace RandomTerrainGenerator.Components.Moon
                 float heightUnderWater = 0;
                 for (int x = 0; x < heightMapResolution - 1; x++)
                     for (int y = 0; y < heightMapResolution - 1; y++)
-                        if (heights[x, y] <= minimum)
+                        if (heights[x, y]*heightMultiplier <= minimum)
                             heightUnderWater++;
 
                 percentage = heightUnderWater / (heightMapResolution * heightMapResolution) * 100;
@@ -98,8 +101,6 @@ namespace RandomTerrainGenerator.Components.Moon
                 if (percentage > 65)
                     return false;
             }
-
-            TerrainToPlaneMesh.HeightmapToPlaneMesh(heights, SceneReferences.Instance.planeMeshTerrain, heightMultiplier);
 
             if (!skipNavMeshCheck)
             {

@@ -22,7 +22,11 @@ namespace RandomTerrainGenerator.Components.Moon
         public NavMeshSurface environmentNavMeshSurface;
         public List<Transform> OutsideAiNodes;
         internal List<Transform> nodesToDestroy;
-        public Mesh planeMeshTerrain;
+        public MeshCollider sandMeshTerrain;
+        public MeshCollider grassMeshTerrain;
+        public MeshCollider stoneMeshTerrain;
+        public MeshCollider snowMeshTerrain;
+        public Mesh textureMeshTerrain;
         public GameObject mainEntrancePrefabs;
         public GameObject fireExitPrefabs;
 
