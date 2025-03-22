@@ -8,30 +8,16 @@ namespace RandomTerrainGenerator.Components.Item
 {
     internal class LandscapeScanner : GrabbableObject
     {
-        private bool activated;
-        private int antennaAngle;
-        private System.Random antennaAngleRandom;
-
+        [Space(10f)]
+        [Header("Landscape Scanner")]
         public Animator animator;
-        public InteractTrigger interactTriggerScript;
-
-        public override void Start()
-        {
-            base.Start();
-            antennaAngleRandom = new System.Random(StartOfRound.Instance.randomMapSeed);
-        }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
+            ChangeStateToActivated();
+
             if (base.IsOwner)
                 playerHeldBy.DiscardHeldObject();
-        }
-
-        public override void DiscardItem()
-        {
-            base.DiscardItem();
-
-            ChangeStateToActivated();
         }
 
         public override void GrabItem()
@@ -41,15 +27,18 @@ namespace RandomTerrainGenerator.Components.Item
 
         private void ChangeStateToActivated()
         {
-            activated = true;
-            antennaAngle = antennaAngleRandom.Next(0, 360);
-            //animator, sound, etc
+            Plugin.Log("activated");
+            animator.SetBool("BatteryEmpty", insertedBattery.empty);
+            animator.SetTrigger("OpenTrigger");
+            //sound, etc
+            //MOVE ANIMATOR ONE UP
         }
 
         private void ChangeStateToDeactivated()
         {
-            activated = false;
-            //animator, sound, etc
+            Plugin.Log("deactivated");
+            animator.SetTrigger("CloseTrigger");
+            //sound, etc
         }
     }
 }

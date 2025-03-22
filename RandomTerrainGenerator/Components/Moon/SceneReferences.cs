@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace RandomTerrainGenerator.Components.Moon
 {
-    [RequireComponent(typeof(NavMeshSurface))]
     public class SceneReferences : MonoBehaviour
     {
         private static SceneReferences _instance;
@@ -18,17 +17,27 @@ namespace RandomTerrainGenerator.Components.Moon
             }
         }
 
-        public Transform itemShipAnimContainer;
-        public NavMeshSurface environmentNavMeshSurface;
+        [Header("Ai nodes")]
         public List<Transform> OutsideAiNodes;
         internal List<Transform> nodesToDestroy;
+
+        [Header("Terrain")]
         public MeshCollider sandMeshTerrain;
         public MeshCollider grassMeshTerrain;
         public MeshCollider stoneMeshTerrain;
         public MeshCollider snowMeshTerrain;
         public Mesh textureMeshTerrain;
-        public GameObject mainEntrancePrefabs;
-        public GameObject fireExitPrefabs;
+
+        [Header("Entrances")]
+        public GameObject[] mainEntrancePrefabs;
+        public GameObject[] fireExitPrefabs;
+        public Transform mainEntrance;
+        public Transform fireExit;
+        internal List<GameObject> placedEntrancePrefabs;
+
+        [Header("Misc")]
+        public Transform itemShipAnimContainer;
+        public NavMeshSurface environmentNavMeshSurface;
 
     }
 }

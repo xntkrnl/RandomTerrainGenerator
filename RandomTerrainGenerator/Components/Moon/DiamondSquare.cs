@@ -1,8 +1,8 @@
 ﻿using RandomTerrainGenerator.Utils;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem.Utilities;
 
 namespace RandomTerrainGenerator.Components.Moon
 {
@@ -45,6 +45,8 @@ namespace RandomTerrainGenerator.Components.Moon
             InitDiamondSquare();
         }
 
+        private void Awake() => InitDiamondSquare();
+
         private void InitDiamondSquare()
         {
             if (StartOfRoundSeed && StartOfRound.Instance) //yeah im checking for instance because unity editor
@@ -69,10 +71,9 @@ namespace RandomTerrainGenerator.Components.Moon
                 }
             else
             {
-                Plugin.Log("SandMeshTerrain/GrassMeshTerrain/StoneMeshTerrain/SnowMeshTerrain is missing. Add meshes to SceneReferences to continue.");
+                Plugin.Log("SandMeshTerrain/GrassMeshTerrain/StoneMeshTerrain/SnowMeshTerrain/TextureMesh is missing. Add meshes to SceneReferences to continue.");
                 return;
             }
-
 
             if (terrain)
             {
@@ -83,6 +84,10 @@ namespace RandomTerrainGenerator.Components.Moon
                     saveTerrainHegihtMapToDisk = false;
                 }
             }
+
+            PositionRandomizer.PlaceEntrances();
+            CleanupAiNodes();
+            StartCoroutine(LastNavmeshRebuild());
         }
 
         private bool ValidateTerrain(int seed)
@@ -126,8 +131,8 @@ namespace RandomTerrainGenerator.Components.Moon
                             SceneReferences.Instance.nodesToDestroy.Add(aiNode);
                     }
 
-                    Plugin.Log($"Seed {seed}: NavMeshErrors: {SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count}, navMeshErrorsCounter: {SceneReferences.Instance.nodesToDestroy.Count}");
-                    if (SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count >= 0.5) return false;
+                    Plugin.Log($"Seed {seed}: NavMeshErrors: {(float)SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count}, navMeshErrorsCounter: {SceneReferences.Instance.nodesToDestroy.Count}");
+                    if ((float)SceneReferences.Instance.nodesToDestroy.Count / SceneReferences.Instance.OutsideAiNodes.Count >= 0.5) return false;
                 }
             }
 
@@ -139,6 +144,11 @@ namespace RandomTerrainGenerator.Components.Moon
         {
             heights = new float[heightMapResolution, heightMapResolution];
             SceneReferences.Instance.nodesToDestroy = new List<Transform>();
+
+            if (SceneReferences.Instance.placedEntrancePrefabs != null)
+                foreach(var prefab in SceneReferences.Instance.placedEntrancePrefabs)
+                    Destroy(prefab);
+            SceneReferences.Instance.placedEntrancePrefabs = new List<GameObject>();
 
             if (randomizeCornerValues)
             {
@@ -152,7 +162,7 @@ namespace RandomTerrainGenerator.Components.Moon
                 terrain.terrainData.SetHeights(0, 0, heights);
         }
 
-        public void ExecuteDiamondSquare()
+        private void ExecuteDiamondSquare()
         {
             heights = new float[heightMapResolution, heightMapResolution];
             float average, range = 0.5f;
@@ -210,7 +220,7 @@ namespace RandomTerrainGenerator.Components.Moon
             Plugin.Log("Diamond Square algorithm done.");
         }
 
-        public void CleanupAiNodes()
+        private void CleanupAiNodes()
         {
             if (Plugin.Instance && StartOfRound.Instance)
             {
@@ -221,6 +231,12 @@ namespace RandomTerrainGenerator.Components.Moon
 
                 SceneReferences.Instance.nodesToDestroy.Clear();
             }
+        }
+
+        private IEnumerator LastNavmeshRebuild()
+        {
+            yield return null;
+            SceneReferences.Instance.environmentNavMeshSurface.BuildNavMesh();
         }
     }
 }
