@@ -9,24 +9,26 @@ namespace RandomTerrainGenerator.Patches
         //roundmanager patch before ainodes generate - maybe not needed?
         //make only host do validations and then just sync validated seed
 
-        //make MORE and fix old main/fireexit prefabs
-
         //landscape scaner
-        //base is ready, need to make prefab, sounds, rpcs (if needed), vfx, shader for lamps... 
+        //sounds(maybe), shader for lamps(maybe)... 
+        //emission for pixels?
 
         //Plans for fireexit/main/something else prefabs positions:
         //check if can actually path to it
+        //make MORE prefabs and fix old main/fireexit prefabs
 
-        //check if i can actually use perlin noise or any other kind of random noise
+        //trees/random prefabs
 
-        //я устал писать на английском
+        //ship landing position
+
+        //change name
+
+        //check if i can actually use perlin noise or any other kind of random noise - wave fucntion collapse?
 
         //create main class (maybe abstract) for generators if i will make more than one
 
-        //fix culing when look up
+        //fix culing when look up - unfixable afaik at the moment
 
-        //check death triggers again
-
-        //finish OOBColliders
+        //finish OOBColliders for jetpack
     }
 }

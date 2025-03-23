@@ -50,6 +50,8 @@ namespace RandomTerrainGenerator.Utils
 
         internal static void PlaceEntrances()
         {
+            if (!StartOfRound.Instance) return;
+
             PlaceEntrance(EntranceType.Main);
             PlaceEntrance(EntranceType.Fire);
         }
