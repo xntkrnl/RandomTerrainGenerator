@@ -11,6 +11,18 @@ namespace RandomTerrainGenerator.Components.Item
         [Space(10f)]
         [Header("Landscape Scanner")]
         public Animator animator;
+        private bool activated;
+        private static LandscapeScanner activeScanner;
+        public GameObject cameraGameObject;
+        public GameObject vfxGameObject;
+
+        public override void Start()
+        {
+            base.Start();
+
+            cameraGameObject.SetActive(false);
+            vfxGameObject.SetActive(false);
+        }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
@@ -27,18 +39,34 @@ namespace RandomTerrainGenerator.Components.Item
 
         private void ChangeStateToActivated()
         {
-            Plugin.Log("activated");
-            animator.SetBool("BatteryEmpty", insertedBattery.empty);
+            if (activated || isInFactory) return;
+
+            activated = true;
+            if (activeScanner == null)
+            {
+                activeScanner = this;
+                cameraGameObject.SetActive(true);
+                vfxGameObject.SetActive(true);
+                animator.SetBool("IsMainScanner", true);
+            }
+
             animator.SetTrigger("OpenTrigger");
-            //sound, etc
-            //MOVE ANIMATOR ONE UP
+            //sounds
         }
 
         private void ChangeStateToDeactivated()
         {
-            Plugin.Log("deactivated");
+            if (!activated) return;
+
+            activated = false;
+            if (activeScanner == this)
+                activeScanner = null!;
+
+            cameraGameObject.SetActive(false);
+            vfxGameObject.SetActive(false);
+            animator.SetBool("IsMainScanner", false);
             animator.SetTrigger("CloseTrigger");
-            //sound, etc
+            //sounds
         }
     }
 }
