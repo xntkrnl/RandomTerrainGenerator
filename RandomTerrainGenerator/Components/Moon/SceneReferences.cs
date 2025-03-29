@@ -29,10 +29,8 @@ namespace RandomTerrainGenerator.Components.Moon
         public Mesh textureMeshTerrain;
 
         [Header("Entrances")]
-        public GameObject[] mainEntrancePrefabs;
-        public GameObject[] fireExitPrefabs;
-        public Transform mainEntrance;
-        public Transform fireExit;
+        public GameObject[] entrancePrefabs;
+        public List<Transform> entrances;
         internal List<GameObject> placedEntrancePrefabs;
 
         [Header("Misc")]

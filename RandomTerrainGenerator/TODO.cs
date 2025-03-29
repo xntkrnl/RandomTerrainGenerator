@@ -15,6 +15,7 @@ namespace RandomTerrainGenerator.Patches
 
         //Plans for fireexit/main/something else prefabs positions:
         //check if can actually path to it
+        //change how prefabs spawn (share prefabs between fire and main entrances)
         //make MORE prefabs and fix old main/fireexit prefabs
 
         //trees/random prefabs

@@ -13,7 +13,7 @@ namespace RandomTerrainGenerator
         public const string modName = "RandomTerrainGenerator";
         public const string modVersion = "0.0.0";
 
-        public static Plugin Instance = null!;
+        public static Plugin Instance { get; private set; }
         private ManualLogSource mls = null!;
 
         internal static readonly Harmony harmony = new Harmony(modGUID);

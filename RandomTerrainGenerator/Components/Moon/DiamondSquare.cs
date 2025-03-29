@@ -124,10 +124,7 @@ namespace RandomTerrainGenerator.Components.Moon
                     {
                         if (aiNode == mainAiNode) continue;
 
-                        NavMeshPath path = new NavMeshPath();
-                        NavMesh.CalculatePath(aiNode.position, mainAiNode.position, 1 << NavMesh.GetAreaFromName("Walkable"), path);
-
-                        if (path.status != NavMeshPathStatus.PathComplete)
+                        if (!PositionRandomizer.CheckPath(aiNode.position, mainAiNode.position))
                             SceneReferences.Instance.nodesToDestroy.Add(aiNode);
                     }
 

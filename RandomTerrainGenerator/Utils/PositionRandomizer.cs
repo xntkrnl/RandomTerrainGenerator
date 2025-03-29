@@ -1,13 +1,17 @@
 ﻿using RandomTerrainGenerator.Components.Moon;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 namespace RandomTerrainGenerator.Utils
 {
     internal static class PositionRandomizer
     {
+        private static int areaMask;
+
         internal static void PlaceAiNodes(float mapRadius)
         {
+            areaMask = 1 << NavMesh.GetAreaFromName("Walkable");
             var aiNodes = SceneReferences.Instance.OutsideAiNodes;
 
             foreach (var aiNode in aiNodes)
@@ -17,7 +21,7 @@ namespace RandomTerrainGenerator.Utils
 
                 do
                 {
-                    position = PlaceAtRandomPosition(mapRadius);
+                    position = GetRandomPosition(mapRadius);
                     attempts++;
                 }
                 while (!Physics.CheckSphere(position, 15f, 4194304, QueryTriggerInteraction.Collide) && attempts < 4);
@@ -32,18 +36,18 @@ namespace RandomTerrainGenerator.Utils
             }
 
             //first node
-            NavMesh.SamplePosition(Vector3.zero, out var hit, mapRadius, 1 << NavMesh.GetAreaFromName("Walkable"));
+            NavMesh.SamplePosition(Vector3.zero, out var hit, mapRadius, areaMask);
             if (hit.position == Vector3.positiveInfinity)
                 SceneReferences.Instance.nodesToDestroy.Add(aiNodes[0]);
 
             aiNodes[0].position = hit.position;
         }
 
-        private static Vector3 PlaceAtRandomPosition(float mapRadius)
+        private static Vector3 GetRandomPosition(float mapRadius)
         {
-            var randomPostion = UnityEngine.Random.insideUnitSphere * mapRadius;
+            var randomPostion = Random.insideUnitSphere * mapRadius;
             NavMeshHit hit;
-            NavMesh.SamplePosition(randomPostion, out hit, mapRadius, 1 << NavMesh.GetAreaFromName("Walkable"));
+            NavMesh.SamplePosition(randomPostion, out hit, mapRadius, areaMask);
 
             return hit.position;
         }
@@ -52,27 +56,32 @@ namespace RandomTerrainGenerator.Utils
         {
             if (!StartOfRound.Instance) return;
 
-            PlaceEntrance(EntranceType.Main);
-            PlaceEntrance(EntranceType.Fire);
+            foreach (var entranceTransform in SceneReferences.Instance.entrances)
+                PlaceEntrance(entranceTransform);
         }
-        private static void PlaceEntrance(EntranceType entranceType)
+        private static void PlaceEntrance(Transform entranceTransform)
         {
-            GameObject[] prefabs;
+            GameObject[] prefabs = SceneReferences.Instance.entrancePrefabs;
             GameObject randomPrefab;
-
-            if (entranceType == EntranceType.Main) prefabs = SceneReferences.Instance.mainEntrancePrefabs;
-            else prefabs = SceneReferences.Instance.fireExitPrefabs;
 
             if (prefabs.Length > 0) randomPrefab = prefabs[Random.RandomRangeInt(0, prefabs.Length)];
             else randomPrefab = prefabs[0];
 
             randomPrefab = GameObject.Instantiate(randomPrefab, SceneReferences.Instance.transform);
-            randomPrefab.transform.position = PlaceAtRandomPosition(512);
-            randomPrefab.transform.rotation.eulerAngles.Set(0, Random.RandomRangeInt(0, 360), 0);
+            var moveEntranceComponent = randomPrefab.GetComponent<EntrancePrefabScript>();
+
+            do
+            {
+                randomPrefab.transform.position = GetRandomPosition(512);
+                randomPrefab.transform.rotation.eulerAngles.Set(0, Random.RandomRangeInt(0, 360), 0);
+                moveEntranceComponent.MoveEntrance(entranceTransform);
+            } while (!CheckPath(SceneReferences.Instance.OutsideAiNodes[0].position, moveEntranceComponent.entrancePoint.position) ||
+                    (Vector3.Distance(SceneReferences.Instance.OutsideAiNodes[0].position, randomPrefab.transform.position) < 300));
+
 
             RaycastHit[] result = null!;
-            var num = Physics.SphereCastNonAlloc(randomPrefab.transform.position, 15f, Vector3.zero, result, 15f, LayerMask.GetMask("ScanNode"));
-            Plugin.Log($"num = {num}");
+            Physics.SphereCastNonAlloc(randomPrefab.transform.position, 15f, Vector3.zero, result, 15f, LayerMask.GetMask("ScanNode"));
+
             if (result != null)
             {
                 foreach (RaycastHit hit in result)
@@ -83,6 +92,14 @@ namespace RandomTerrainGenerator.Utils
             }
 
             SceneReferences.Instance.placedEntrancePrefabs.Add(randomPrefab);
+        }
+
+        public static bool CheckPath(Vector3 position1, Vector3 position2)
+        {
+            NavMeshPath path = new NavMeshPath();
+            NavMesh.CalculatePath(position1, position2, areaMask, path);
+
+            return path.status == NavMeshPathStatus.PathComplete;
         }
     }
 }
